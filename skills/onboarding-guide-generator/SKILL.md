@@ -17,7 +17,7 @@ Do NOT use this skill to generate `CLAUDE.md` or any AI-facing documentation —
 ## What You Will Produce
 
 **Always:**
-- `ONBOARDING.md` — saved to the root of the current repo. A human-readable guide with six sections, Mermaid architecture diagrams, and a targeted questions list.
+- `ONBOARDING.md` — saved to the root of the current repo. A human-readable guide with seven sections, Mermaid architecture diagrams, a domain language glossary, and a targeted questions list.
 
 **Optionally:**
 - `ONBOARDING.html` — a self-contained single HTML file with navigation sidebar, section progress, and syntax-highlighted code snippets. No server required, opens in any browser.
@@ -56,10 +56,11 @@ Look for `.env.example`, `config/`, `settings.py`, files matching `*.env*` or `c
 - Anything undocumented, inconsistent, or hard to explain from the code alone → goes in "Questions to Ask"
 - The overall architecture shape → goes in the Mermaid diagram
 - Gotchas, non-obvious patterns, things that would surprise a newcomer → goes in "Watch Out For"
+- Domain-specific terms: class names, entity names, event names, API resource names, database table names that carry business meaning → goes in "The Language"
 
 ## Step 3: Generate ONBOARDING.md
 
-Write `ONBOARDING.md` to the root of the current repo with exactly these six sections in this order:
+Write `ONBOARDING.md` to the root of the current repo with exactly these seven sections in this order:
 
 ---
 
@@ -120,7 +121,41 @@ Bulleted list of gotchas, non-obvious conventions, or things that would trip up 
 
 If you found nothing surprising, write "Nothing unusual found" — do not invent warnings.
 
-### Section 6: Questions to Ask
+### Section 6: The Language
+
+The ubiquitous language of this codebase — key domain terms a new developer needs to understand to read the code fluently.
+
+**Part A — Domain terms**
+
+For each term, provide:
+- The term as used in the codebase (use the exact casing from the code)
+- A one-sentence definition inferred from how it is used
+
+Extract terms from: class names, entity/model names, event names, API resource names, database table names, and any business-specific concepts that appear repeatedly.
+
+Example format:
+
+| Term | Definition |
+|------|-----------|
+| `Fulfillment` | The process of picking, packing, and shipping an order after it is placed |
+| `Settlement` | A batched financial reconciliation between the platform and a merchant |
+| `Ledger` | An append-only record of all balance changes for an account |
+
+If the domain is simple or terms are self-explanatory, write "No domain-specific terms identified — naming is self-evident."
+
+**Part B — Assumed knowledge**
+
+List concepts, protocols, or patterns the codebase takes for granted that a developer is expected to already know. Infer these from dependencies, architectural patterns, and how the code is structured — not from what is documented.
+
+Example format:
+
+- **OAuth 2.0** — authentication flow used throughout; no explanation is provided in the code
+- **Event sourcing** — state is derived from an event log; assumed pattern, not explained
+- **REST conventions** — all APIs follow REST; no API design docs exist
+
+If nothing non-obvious is assumed, write "No specialized prior knowledge required."
+
+### Section 7: Questions to Ask
 
 See the "How to Write the Questions to Ask Section" section of this skill for instructions.
 
@@ -131,14 +166,14 @@ Only do this if the user said yes in Step 1.
 Generate a single self-contained HTML file at the root of the repo named `ONBOARDING.html`. Requirements:
 
 - **No external dependencies** — all CSS and JS must be inline. The file must open correctly with no internet connection.
-- **Navigation sidebar** — a fixed left sidebar listing all six sections. Clicking a section scrolls to it.
+- **Navigation sidebar** — a fixed left sidebar listing all seven sections. Clicking a section scrolls to it.
 - **Section progress** — as the user scrolls, the active section is highlighted in the sidebar.
 - **Mermaid diagrams** — render the architecture diagram as a plain text code block (using `<pre>` with a `mermaid` class). Do not use the Mermaid CDN or inline the full library. A developer can open the markdown version to see the rendered diagram.
 - **Readable typography** — use a clean sans-serif font, comfortable line-height, max content width of ~75 characters.
 
 The HTML content must be identical to `ONBOARDING.md` — do not add or remove information.
 
-When converting markdown headings to HTML, add an `id` attribute in kebab-case matching the nav link anchors: `## Get Running` → `<h2 id="get-running">Get Running</h2>`, `## What Is This` → `<h2 id="what-is-this">What Is This</h2>`, and so on for all six sections.
+When converting markdown headings to HTML, add an `id` attribute in kebab-case matching the nav link anchors: `## Get Running` → `<h2 id="get-running">Get Running</h2>`, `## The Language` → `<h2 id="the-language">The Language</h2>`, and so on for all seven sections.
 
 ## Output Format: ONBOARDING.md
 
@@ -162,6 +197,12 @@ The generated file must follow this structure exactly:
 
 ## Watch Out For
 [gotchas or "Nothing unusual found"]
+
+## The Language
+### Domain Terms
+[term table or "No domain-specific terms identified — naming is self-evident."]
+### Assumed Knowledge
+[bulleted list or "No specialized prior knowledge required."]
 
 ## Questions to Ask
 [specific questions or "No gaps found — the code is well-documented."]
@@ -199,6 +240,7 @@ Convert markdown to HTML preserving structure: headings → `<h2 id="kebab-name"
     <a href="#the-map">The Map</a>
     <a href="#common-tasks">Common Tasks</a>
     <a href="#watch-out-for">Watch Out For</a>
+    <a href="#the-language">The Language</a>
     <a href="#questions-to-ask">Questions to Ask</a>
   </nav>
   <main>
